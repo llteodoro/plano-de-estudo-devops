@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano de Carreira SRE Interativo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Stone, Muted Teal, White) -->
+    <!-- Application Structure Plan: A estrutura da aplicação foi desenhada como uma interface de abas para facilitar a navegação e comparação direta entre os três perfis distintos. Essa abordagem evita uma página longa e permite que o usuário foque em um plano de cada vez. Um gráfico de barras no topo oferece uma comparação quantitativa imediata dos prazos, enquanto a estrutura de cartões em linha do tempo para cada fase organiza o conteúdo de forma progressiva e visualmente atraente. Esta arquitetura foi escolhida para transformar um documento de texto em uma experiência de usuário interativa e de fácil digestão. -->
+    <!-- Visualization & Content Choices: Report Info -> Comparação de tempo para cada plano. Goal -> Comparar. Viz/Presentation Method -> Gráfico de Barras. Interaction -> Tooltip ao passar o mouse. Justification -> Oferece uma visão geral rápida e comparativa das linhas do tempo. Library -> Chart.js. | Report Info -> Fases de aprendizado para cada plano. Goal -> Organizar. Viz/Presentation Method -> Diagrama de fluxo/linha do tempo com cartões. Interaction -> Navegação por abas. Justification -> Representa visualmente a progressão da jornada de aprendizado de forma clara e sequencial. Library/Method -> HTML/CSS com Tailwind. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F4; /* stone-100 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #0D9488; /* teal-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 1.25rem;
+            left: -0.5rem;
+            transform: translateX(-50%);
+            width: 1rem;
+            height: 1rem;
+            border-radius: 9999px;
+            background-color: #ccb2b2;
+            border: 2px solid white;
+        }
+        .timeline-connector {
+            position: absolute;
+            top: 1.75rem;
+            left: calc(-0.5rem - 1px);
+            width: 2px;
+            height: calc(100% - 1.75rem);
+            background-color: #e0dcdc;
+        }
+    </style>
+</head>
+<body class="text-stone-800">
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-teal-700">Plano de Carreira SRE</h1>
+            <p class="mt-4 text-lg text-stone-600 max-w-3xl mx-auto">Um guia interativo para capacitar seus amigos na jornada para se tornarem Engenheiros de Confiabilidade de Sites.</p>
+        </header>
+
+        <section class="mb-12 bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold text-center mb-4 text-stone-700">Comparativo de Tempo para Capacitação</h2>
+            <p class="text-center text-stone-500 mb-6">Este gráfico ilustra o tempo estimado (em meses) para cada perfil atingir um nível de prontidão para assumir responsabilidades na área.</p>
+            <div class="chart-container">
+                <canvas id="timeComparisonChart"></canvas>
+            </div>
+        </section>
+
+        <main>
+            <div id="tabs" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                <button data-target="plano1" class="tab-button active text-sm md:text-base font-semibold py-3 px-6 rounded-full bg-white shadow-md">👨‍💼 Gerente de Projetos</button>
+                <button data-target="plano2" class="tab-button text-sm md:text-base font-semibold py-3 px-6 rounded-full bg-white shadow-md">👨‍💻 Estudante de TI</button>
+                <button data-target="plano3" class="tab-button text-sm md:text-base font-semibold py-3 px-6 rounded-full bg-white shadow-md">🧑‍🚀 Jovem Entusiasta</button>
+            </div>
+
+            <div id="content-panels">
+                <div id="plano1" class="tab-content">
+                    <div class="bg-teal-50 border-l-4 border-teal-500 text-teal-800 p-6 rounded-r-lg mb-8 shadow">
+                        <h3 class="text-2xl font-bold">Plano para o Gerente de Projetos de Dados</h3>
+                        <p class="mt-2 text-stone-700"><strong>Objetivo:</strong> Torná-lo um SRE Jr. focado em automação de pipeline (CI/CD) e monitoramento em <strong>3-6 meses</strong>.</p>
+                        <p class="mt-2">Este plano foca em capitalizar a experiência existente em tecnologia, direcionando o aprendizado para a prática de DevOps e SRE, com ênfase nas ferramentas e processos mais críticos da área.</p>
+                    </div>
+                    <div class="relative pl-8">
+                        <div class="timeline-item relative pb-12">
+                            <div class="timeline-connector"></div>
+                            <h4 class="text-xl font-semibold text-teal-600">Fase 1: Nivelamento Técnico e Hands-on (1-2 Meses)</h4>
+                            <div class="mt-4 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-teal-600">▶️</span>
+                                        <div><strong>Controle de Versão com Git:</strong> Aprofundar em branching, merge e rebase. <a href="https://www.youtube.com/watch?v=DqTITcMq68k" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-teal-600">▶️</span>
+                                        <div><strong>Linha de Comando (CLI):</strong> Proficiência em Bash e PowerShell. <a href="https://www.youtube.com/watch?v=6n5s_A48_H0" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-teal-600">▶️</span>
+                                        <div><strong>Contêineres com Docker:</strong> Criar Dockerfiles e usar comandos essenciais. <a href="https://www.youtube.com/watch?v=0D442G9n4X4" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                     <li class="flex items-start gap-3">
+                                        <span class="font-bold text-teal-600">▶️</span>
+                                        <div><strong>Introdução ao Build (Angular & .NET):</strong> Entender o processo de compilação. <a href="https://www.youtube.com/watch?v=s9_dIuA0_pA" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item relative pb-12">
+                            <div class="timeline-connector"></div>
+                            <h4 class="text-xl font-semibold text-teal-600">Fase 2: Mergulho em CI/CD e Azure (1-2 Meses)</h4>
+                            <div class="mt-4 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-teal-600">▶️</span>
+                                        <div><strong>Azure DevOps & GitHub Actions:</strong> Dominar conceitos de pipelines. <a href="https://www.youtube.com/watch?v=ubJdJ4xd2yU" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-teal-600">▶️</span>
+                                        <div><strong>Azure Core Services (App Services):</strong> Entender deployment slots e logs. <a href="https://www.youtube.com/watch?v=kxoHpf-avd4" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                         <div class="timeline-item relative pb-0">
+                            <h4 class="text-xl font-semibold text-teal-600">Fase 3: Observabilidade e Confiabilidade (1-2 Meses)</h4>
+                            <div class="mt-4 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-teal-600">▶️</span>
+                                        <div><strong>Azure Monitor & Application Insights:</strong> Criar dashboards e alertas. <a href="https://www.youtube.com/watch?v=7M4ASTE4pvo" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-teal-600">▶️</span>
+                                        <div><strong>Monitoramento de Frontend:</strong> Usar Lighthouse e entender RUM/Synthetic. <a href="https://www.youtube.com/watch?v=L-h2O2a3a_A" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-teal-600">▶️</span>
+                                        <div><strong>Introdução a Logging (KQL):</strong> Consultar logs no Azure Monitor. <a href="https://www.youtube.com/watch?v=gT8B5pUw4jQ" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="plano2" class="tab-content hidden">
+                    <div class="bg-sky-50 border-l-4 border-sky-500 text-sky-800 p-6 rounded-r-lg mb-8 shadow">
+                        <h3 class="text-2xl font-bold">Plano para o Estudante de TI</h3>
+                        <p class="mt-2 text-stone-700"><strong>Objetivo:</strong> Construir uma base sólida de infraestrutura e DevOps, visando uma posição de SRE estagiário/trainee em <strong>6-9 meses</strong>.</p>
+                         <p class="mt-2">Este roteiro é projetado para conectar a base teórica da faculdade com as práticas e ferramentas modernas do mercado, construindo um perfil técnico competitivo desde o início.</p>
+                    </div>
+                    <div class="relative pl-8">
+                        <div class="timeline-item relative pb-12">
+                            <div class="timeline-connector"></div>
+                            <h4 class="text-xl font-semibold text-sky-600">Fase 1: Fundamentos do Mundo Real (2-3 Meses)</h4>
+                            <div class="mt-4 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-sky-600">▶️</span>
+                                        <div><strong>Redes na Prática:</strong> Entender HTTP, DNS, Firewalls na nuvem. <a href="https://www.youtube.com/watch?v=B4T32f-5-P0" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-sky-600">▶️</span>
+                                        <div><strong>Sistemas Operacionais (Linux):</strong> Dominar o terminal e gerenciamento de pacotes. <a href="https://www.youtube.com/watch?v=6-_1a_8p24s" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-sky-600">▶️</span>
+                                        <div><strong>Programação para Infra (Python):</strong> Criar scripts de automação. <a href="https://www.youtube.com/watch?v=S9uPNppGsGo" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-sky-600">▶️</span>
+                                        <div><strong>Git Básico:</strong> Comandos essenciais para colaboração. <a href="https://www.youtube.com/watch?v=UBAX-13gZ5w" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item relative pb-12">
+                            <div class="timeline-connector"></div>
+                            <h4 class="text-xl font-semibold text-sky-600">Fase 2: Introdução à Nuvem e DevOps (2-3 Meses)</h4>
+                            <div class="mt-4 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-sky-600">▶️</span>
+                                        <div><strong>Cloud Computing (Azure AZ-900):</strong> Entender IaaS, PaaS, SaaS. <a href="https://www.youtube.com/watch?v=VdFkg-a8NpM" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-sky-600">▶️</span>
+                                        <div><strong>Cultura DevOps e SRE:</strong> Aprender sobre automação, SLI/SLO. <a href="https://www.youtube.com/watch?v=nrgG_j_d5oQ" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-sky-600">▶️</span>
+                                        <div><strong>Contêineres (Docker):</strong> Focar no conceito e uso básico. <a href="https://www.youtube.com/watch?v=c2y_yz_w_vI" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item relative pb-0">
+                            <h4 class="text-xl font-semibold text-sky-600">Fase 3: Primeiras Ferramentas e Práticas (2-3 Meses)</h4>
+                            <div class="mt-4 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-sky-600">▶️</span>
+                                        <div><strong>CI/CD para Iniciantes (GitHub Actions):</strong> Criar um pipeline "Hello World". <a href="https://www.youtube.com/watch?v=2-i9g5k0a5Q" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-sky-600">▶️</span>
+                                        <div><strong>Infra como Código (Terraform):</strong> Entender o conceito e seus benefícios. <a href="https://www.youtube.com/watch?v=xCFgA9sR-gY" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="plano3" class="tab-content hidden">
+                    <div class="bg-amber-50 border-l-4 border-amber-500 text-amber-800 p-6 rounded-r-lg mb-8 shadow">
+                        <h3 class="text-2xl font-bold">Plano para o Jovem Entusiasta</h3>
+                        <p class="mt-2 text-stone-700"><strong>Objetivo:</strong> Construir uma base forte em tecnologia, preparando para uma vaga de Jovem Aprendiz ou Estágio em <strong>1-2 anos</strong>.</p>
+                        <p class="mt-2">O foco aqui é despertar a paixão pela tecnologia através de projetos práticos e divertidos, construindo um conhecimento fundamental sólido que servirá para qualquer área de TI no futuro.</p>
+                    </div>
+                     <div class="relative pl-8">
+                        <div class="timeline-item relative pb-12">
+                            <div class="timeline-connector"></div>
+                            <h4 class="text-xl font-semibold text-amber-600">Fase 1: Descobrindo o Mundo da Tecnologia (3-4 Meses)</h4>
+                            <div class="mt-4 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-amber-600">▶️</span>
+                                        <div><strong>Como a Internet Funciona:</strong> Conceitos de DNS, HTTP, Servidores. <a href="https://www.youtube.com/watch?v=rsCHIbH-2Fw" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-amber-600">▶️</span>
+                                        <div><strong>Lógica de Programação com Python:</strong> Construir pequenos projetos. <a href="https://www.youtube.com/watch?v=31llNGKWDdo" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-amber-600">▶️</span>
+                                        <div><strong>Seu Primeiro Servidor (Local):</strong> Instalar Linux em uma VM. <a href="https://www.youtube.com/watch?v=Omlcx4M_7AE" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item relative pb-12">
+                            <div class="timeline-connector"></div>
+                            <h4 class="text-xl font-semibold text-amber-600">Fase 2: Construindo Coisas Simples (3-4 Meses)</h4>
+                            <div class="mt-4 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-amber-600">▶️</span>
+                                        <div><strong>HTML & CSS Básico:</strong> Criar uma página web estática. <a href="https://www.youtube.com/watch?v=Ejkb_YpuHWs&list=PLHz_AreHm4dkZ9-atkcmcBaMZdmLHft8n" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-amber-600">▶️</span>
+                                        <div><strong>Git e GitHub Pages:</strong> Publicar sua página na web. <a href="https://www.youtube.com/watch?v=5r1yV_4bYtM" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-amber-600">▶️</span>
+                                        <div><strong>Automação com Python:</strong> Criar scripts para resolver problemas. <a href="https://www.youtube.com/watch?v=G7qH500-gaQ" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item relative pb-0">
+                            <h4 class="text-xl font-semibold text-amber-600">Fase 3: Introdução aos Conceitos de SRE/DevOps (Contínuo)</h4>
+                            <div class="mt-4 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-amber-600">▶️</span>
+                                        <div><strong>O que é a Nuvem?</strong> <a href="https://www.youtube.com/watch?v=EvDxekhAKT8" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-amber-600">▶️</span>
+                                        <div><strong>O que é um Pipeline de CI/CD?</strong> <a href="https://www.youtube.com/watch?v=z8RoaT0EaU4" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-bold text-amber-600">▶️</span>
+                                        <div><strong>O que são Contêineres?</strong> <a href="https://www.youtube.com/watch?v=3gwO5l2D4uA" target="_blank" class="text-blue-600 hover:underline">Vídeo Sugerido</a></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-button');
+            const contentPanels = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.target;
+
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    contentPanels.forEach(panel => {
+                        if (panel.id === target) {
+                            panel.classList.remove('hidden');
+                        } else {
+                            panel.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+            
+            const ctx = document.getElementById('timeComparisonChart').getContext('2d');
+            const timeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Gerente de Projetos', 'Estudante de TI', 'Jovem Entusiasta'],
+                    datasets: [{
+                        label: 'Tempo Máximo Estimado (meses)',
+                        data: [6, 9, 24],
+                        backgroundColor: [
+                            'rgba(13, 148, 136, 0.6)', // teal-600
+                            'rgba(14, 165, 233, 0.6)', // sky-500
+                            'rgba(245, 158, 11, 0.6)'  // amber-500
+                        ],
+                        borderColor: [
+                            'rgba(13, 148, 136, 1)',
+                            'rgba(14, 165, 233, 1)',
+                            'rgba(245, 158, 11, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Meses'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        const value = context.parsed.y;
+                                        if (value < 12) {
+                                            label += `${value} meses`;
+                                        } else {
+                                            const years = Math.floor(value / 12);
+                                            const yearText = years > 1 ? 'anos' : 'ano';
+                                            label += `${years} ${yearText}`;
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
